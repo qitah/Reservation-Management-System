@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,6 +25,14 @@ SECRET_KEY = 'django-insecure-vno(9r9)1v#9ly+dq*&blk%=vy$q!nfq^#h%@vhxb-=plieyy-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+SIMPLE_JWT = {
+    
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+        "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
+
+}
+
 
 ALLOWED_HOSTS = []
 
@@ -40,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'users',
+    'reservation',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -122,11 +132,13 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
+TIME_INPUT_FORMATS = ('%I:%M %p',)
+
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
