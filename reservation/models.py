@@ -9,7 +9,7 @@ class Table(models.Model):
 class Reservation(models.Model):
     table = models.ForeignKey(Table, on_delete=models.PROTECT)
     group_size = models.IntegerField()
-    date = models.DateField(default=date.today(), blank=True)
+    date = models.DateField(default=timezone.localdate(timezone.now()), blank=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
 
