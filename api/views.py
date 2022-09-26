@@ -74,6 +74,15 @@ class ReaservationCreatView(generics.CreateAPIView):
                 return Response({'message':'Reservation time should be within working hours from 12:00 - 23:59 '})
             return Response({'message':'table does\'t fit the group'})    
         
+class ReservationDeleteView(generics.DestroyAPIView):
+    serializer_class = ListReservationSerializer
+    queryset = Reservation.objects.all()
+    lookup_field='pk'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"message":"Item deleted",'status':status.HTTP_204_NO_CONTENT})
 
 
 

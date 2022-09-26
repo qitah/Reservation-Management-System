@@ -43,3 +43,13 @@ def check_for_new_reservation_time(new_start_time:datetime.time, new_end_time:da
 
     return flag
 
+def finde_time_slots(reservations):
+    time_slots_list = []
+
+    if reservations:
+        for reservation in reservations:
+            reserved_end_time = str(reservation.end_time)
+            reserved_stert_time = str(reservation.start_time)
+            time_slots_list.append(reserved_stert_time +" - "+ reserved_end_time)
+        return time_slots_list
+    return time_slots_list.append("12:00 - 23:59")
