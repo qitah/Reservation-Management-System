@@ -3,6 +3,7 @@ from reservation.models import Reservation, Table
 from django.db.models import Q
 from reservations.settings import START_WORKING_TIME, END_WORKING_TIME
 from datetimerange import DateTimeRange
+from django.utils import timezone
 
 def table_fits_the_group(group_zize:int, table_id:id) -> bool:
     try:
@@ -52,4 +53,16 @@ def finde_time_slots(reservations):
             reserved_stert_time = str(reservation.start_time)
             time_slots_list.append(reserved_stert_time +" - "+ reserved_end_time)
         return time_slots_list
-    return time_slots_list.append("12:00 - 23:59")
+    return time_slots_list.append("{} - {}".format(START_WORKING_TIME,END_WORKING_TIME))
+
+def available_time_slots(number_of_seats):
+   
+    available_time_slots = {}
+    current_time = timezone.localtime().time()
+    tables = Table.objects.filter(Q(number_of_seats = number_of_seats) | Q(number_of_seats = number_of_seats + 1))
+    
+    if tables:
+        for table in tables:
+            reservations = Reservation.objects.all().filter(date = date.today(), table = table.id) #localdate
+            available_time_slots["Table {}".format(table.id)] = finde_time_slots(reservations)
+    return available_time_slots

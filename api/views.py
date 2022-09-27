@@ -84,6 +84,15 @@ class ReservationDeleteView(generics.DestroyAPIView):
         self.perform_destroy(instance)
         return Response({"message":"Item deleted",'status':status.HTTP_204_NO_CONTENT})
 
+class AvailableTimeSlotsView (generics.ListAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ListReservationSerializer
+    lookup_url_kwarg = 'number_of_seats'
+
+    
+
+
+    
 
 
     
