@@ -59,18 +59,18 @@ class ReaservationCreatView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True): 
-            table_id = serializer.validated_data['table']
+            table = serializer.validated_data['table']
             group_size = serializer.validated_data['group_size']
             new_start_time = serializer.validated_data['start_time']
             new_end_time = serializer.validated_data['end_time']
-
-            if table_fits_the_group(group_size, table_id.id):
+            print(table.number_of_seats)
+            if table_fits_the_group(group_size, table.number_of_seats):
                 if within_working_hours(new_start_time, new_end_time):
-                    if check_for_new_reservation_time(new_start_time, new_end_time, table_id):
+                    if check_for_new_reservation_time(new_start_time, new_end_time, table.id):
                         self.perform_create(serializer)
                         headers = self.get_success_headers(serializer.data)
                         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-                    return Response({"Time": serializer.data["start_time"] +" - "+ serializer.data["end_time"] ,"message": "There is another reservation in this time slot"})
+                    return Response({"Time": serializer.data["start_time"] +" - "+ serializer.data["end_time"] ,"message": "There is another reservation in this time slot"}, status=status.HTTP_409_CONFLICT)
                 return Response({'message':'Reservation time should be within working hours from 12:00 - 23:59 '})
             return Response({'message':'table does\'t fit the group'})    
         
@@ -89,7 +89,7 @@ class AvailableTimeSlotsView (generics.ListAPIView):
     serializer_class = ListReservationSerializer
     lookup_url_kwarg = 'number_of_seats'
 
-    
+
 
 
     

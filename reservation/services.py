@@ -5,21 +5,15 @@ from reservations.settings import START_WORKING_TIME, END_WORKING_TIME
 from datetimerange import DateTimeRange
 from django.utils import timezone
 
-def table_fits_the_group(group_zize:int, table_id:id) -> bool:
-    try:
-        table = Table.objects.get(id=table_id)
-        number_of_seats = table.number_of_seats
-        if  group_zize == number_of_seats or group_zize == number_of_seats + 1:
+def table_fits_the_group(group_zize:int, number_of_seats:int) -> bool:
+        if  group_zize == number_of_seats or group_zize + 1 == number_of_seats:
             return True
-    except Table.DoesNotExist as e:
-        print(e)
-    return False
+        return False
 
 def within_working_hours(start_time:datetime.time , end_time:datetime.time) -> bool:
     if START_WORKING_TIME <= start_time <= END_WORKING_TIME and START_WORKING_TIME <= end_time <= END_WORKING_TIME:
         return True
     return False
-
 
 def check_for_new_reservation_time(new_start_time:datetime.time, new_end_time:datetime.time,  table_id:id) -> bool:
     Reservations = Reservation.objects.filter(table=table_id, date=date.today())
@@ -56,7 +50,6 @@ def finde_time_slots(reservations):
     return time_slots_list.append("{} - {}".format(START_WORKING_TIME,END_WORKING_TIME))
 
 def available_time_slots(number_of_seats):
-   
     available_time_slots = {}
     current_time = timezone.localtime().time()
     tables = Table.objects.filter(Q(number_of_seats = number_of_seats) | Q(number_of_seats = number_of_seats + 1))
